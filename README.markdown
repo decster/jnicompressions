@@ -23,18 +23,18 @@ $mvn test
 Here are some test results using some test data included in google snappy:
 
 Test environment:
-MacbookPro
-Processor Name: Intel Core i5
-  Processor Speed:  2.3 GHz
-  Number of Processors: 1
-  Total Number of Cores:  2
-  L2 Cache (per Core):  256 KB
-  L3 Cache: 3 MB
-  Memory: 4 GB
-gcc version 4.2.1 (Apple Inc. build 5659)
+    MacbookPro
+    Processor Name: Intel Core i5
+    Processor Speed:  2.3 GHz
+    Number of Processors: 1
+    Total Number of Cores:  2
+    L2 Cache (per Core):  256 KB
+    L3 Cache: 3 MB
+    Memory: 4 GB
+    gcc version 4.2.1 (Apple Inc. build 5659)
 
-Running compressions.BlockCompressionTest
-compressions.Lz4Compression: DirectByteBuffer interface, block size: 64K, time: 600
+Running compressions.BlockCompressionTest  
+compressions.Lz4Compression: DirectByteBuffer interface, block size: 64K, time: 600  
            alice29.txt:   Compress:  229M/s Decompress:   619M/s( 1036M/s) ratio: 59.7%
           asyoulik.txt:   Compress:  213M/s Decompress:   635M/s( 1019M/s) ratio: 62.3%
                cp.html:   Compress:  325M/s Decompress:   718M/s( 1483M/s) ratio: 48.4%
@@ -56,7 +56,7 @@ compressions.Lz4Compression: DirectByteBuffer interface, block size: 64K, time: 
                xargs.1:   Compress:  406M/s Decompress:   851M/s( 1354M/s) ratio: 62.9%
                  Total:   Compress:  391M/s Decompress:   651M/s( 1513M/s) ratio: 43.0%
 
-compressions.Lz4Compression: byte array interface, block size: 64K, time: 600
+compressions.Lz4Compression: byte array interface, block size: 64K, time: 600  
            alice29.txt:   Compress:  223M/s Decompress:   560M/s(  936M/s) ratio: 59.7%
           asyoulik.txt:   Compress:  208M/s Decompress:   561M/s(  900M/s) ratio: 62.3%
                cp.html:   Compress:  303M/s Decompress:   624M/s( 1290M/s) ratio: 48.4%
@@ -82,52 +82,52 @@ Just for comparison, here are some test results using C++ instead of Java/JNI.
 You can find the test code in another project of mine:
 [NativeTask](https://github.com/decster/nativetask)
 
-[==========] Running 2 tests from 1 test case.
-[----------] Global test environment set-up.
-[----------] 2 tests from Perf
-[ RUN      ] Perf.RawCompressionLz4
-12/01/14 14:11:12 INFO Block size: 64K
-12/01/14 14:11:12 INFO Compress:  228M/s Decompress:   614M/s( 1028M/s) ratio: 59.7% - /Users/decster/projects/jnicompressions/testdata/alice29.txt
-12/01/14 14:11:12 INFO Compress:  216M/s Decompress:   635M/s( 1019M/s) ratio: 62.3% - /Users/decster/projects/jnicompressions/testdata/asyoulik.txt
-12/01/14 14:11:13 INFO Compress:  344M/s Decompress:   753M/s( 1556M/s) ratio: 48.4% - /Users/decster/projects/jnicompressions/testdata/cp.html
-12/01/14 14:11:13 INFO Compress:  356M/s Decompress:   637M/s( 1362M/s) ratio: 46.8% - /Users/decster/projects/jnicompressions/testdata/fields.c
-12/01/14 14:11:13 INFO Compress:  842M/s Decompress:   452M/s( 2543M/s) ratio: 17.8% - /Users/decster/projects/jnicompressions/testdata/geo.protodata
-12/01/14 14:11:13 INFO Compress:  482M/s Decompress:   792M/s( 1541M/s) ratio: 51.4% - /Users/decster/projects/jnicompressions/testdata/grammar.lsp
-12/01/14 14:11:13 INFO Compress: 4653M/s Decompress: 14962M/s(14925M/s) ratio: 100.2% - /Users/decster/projects/jnicompressions/testdata/house.jpg
-12/01/14 14:11:13 INFO Compress:  634M/s Decompress:   456M/s( 2092M/s) ratio: 21.8% - /Users/decster/projects/jnicompressions/testdata/html
-12/01/14 14:11:13 INFO Compress:  622M/s Decompress:   455M/s( 2062M/s) ratio: 22.1% - /Users/decster/projects/jnicompressions/testdata/html_x_4
-12/01/14 14:11:14 INFO Compress:  531M/s Decompress:   610M/s( 1675M/s) ratio: 36.4% - /Users/decster/projects/jnicompressions/testdata/kennedy.xls
-12/01/14 14:11:14 INFO Compress:  369M/s Decompress:   437M/s(  948M/s) ratio: 46.1% - /Users/decster/projects/jnicompressions/testdata/kppkn.gtb
-12/01/14 14:11:15 INFO Compress:  236M/s Decompress:   605M/s( 1076M/s) ratio: 56.2% - /Users/decster/projects/jnicompressions/testdata/lcet10.txt
-12/01/14 14:11:15 INFO Compress: 1154M/s Decompress:  3679M/s( 4458M/s) ratio: 82.5% - /Users/decster/projects/jnicompressions/testdata/mapreduce-osdi-1.pdf
-12/01/14 14:11:16 INFO Compress:  203M/s Decompress:   650M/s(  972M/s) ratio: 66.8% - /Users/decster/projects/jnicompressions/testdata/plrabn12.txt
-12/01/14 14:11:17 INFO Compress:  902M/s Decompress:   364M/s( 2156M/s) ratio: 16.9% - /Users/decster/projects/jnicompressions/testdata/ptt5
-12/01/14 14:11:17 INFO Compress:  314M/s Decompress:   747M/s( 1518M/s) ratio: 49.2% - /Users/decster/projects/jnicompressions/testdata/sum
-12/01/14 14:11:17 INFO Compress: 1070M/s Decompress:   694M/s( 3737M/s) ratio: 18.6% - /Users/decster/projects/jnicompressions/testdata/terasort
-12/01/14 14:11:18 INFO Compress:  340M/s Decompress:   758M/s( 1612M/s) ratio: 47.0% - /Users/decster/projects/jnicompressions/testdata/urls.10K
-12/01/14 14:11:18 INFO Compress:  393M/s Decompress:   861M/s( 1369M/s) ratio: 62.9% - /Users/decster/projects/jnicompressions/testdata/xargs.1
-12/01/14 14:11:18 INFO Compress:  392M/s Decompress:   657M/s( 1529M/s) ratio: 43.0% - Total
-[       OK ] Perf.RawCompressionLz4 (5794 ms)
-[ RUN      ] Perf.RawCompressionSnappy
-12/01/14 14:11:18 INFO Block size: 64K
-12/01/14 14:11:18 INFO Compress:  134M/s Decompress:   368M/s(  616M/s) ratio: 59.8% - /Users/decster/projects/jnicompressions/testdata/alice29.txt
-12/01/14 14:11:19 INFO Compress:  130M/s Decompress:   371M/s(  578M/s) ratio: 64.1% - /Users/decster/projects/jnicompressions/testdata/asyoulik.txt
-12/01/14 14:11:19 INFO Compress:  193M/s Decompress:   469M/s(  974M/s) ratio: 48.1% - /Users/decster/projects/jnicompressions/testdata/cp.html
-12/01/14 14:11:19 INFO Compress:  212M/s Decompress:   408M/s(  961M/s) ratio: 42.4% - /Users/decster/projects/jnicompressions/testdata/fields.c
-12/01/14 14:11:19 INFO Compress:  434M/s Decompress:   445M/s( 1923M/s) ratio: 23.2% - /Users/decster/projects/jnicompressions/testdata/geo.protodata
-12/01/14 14:11:19 INFO Compress:  277M/s Decompress:   523M/s( 1082M/s) ratio: 48.4% - /Users/decster/projects/jnicompressions/testdata/grammar.lsp
-12/01/14 14:11:19 INFO Compress: 3107M/s Decompress: 17719M/s(17740M/s) ratio: 99.9% - /Users/decster/projects/jnicompressions/testdata/house.jpg
-12/01/14 14:11:19 INFO Compress:  362M/s Decompress:   375M/s( 1589M/s) ratio: 23.6% - /Users/decster/projects/jnicompressions/testdata/html
-12/01/14 14:11:20 INFO Compress:  361M/s Decompress:   366M/s( 1554M/s) ratio: 23.6% - /Users/decster/projects/jnicompressions/testdata/html_x_4
-12/01/14 14:11:21 INFO Compress:  309M/s Decompress:   371M/s(  896M/s) ratio: 41.3% - /Users/decster/projects/jnicompressions/testdata/kennedy.xls
-12/01/14 14:11:22 INFO Compress:  192M/s Decompress:   277M/s(  724M/s) ratio: 38.3% - /Users/decster/projects/jnicompressions/testdata/kppkn.gtb
-12/01/14 14:11:23 INFO Compress:  141M/s Decompress:   374M/s(  656M/s) ratio: 57.1% - /Users/decster/projects/jnicompressions/testdata/lcet10.txt
-12/01/14 14:11:23 INFO Compress:  737M/s Decompress:  3315M/s( 4035M/s) ratio: 82.1% - /Users/decster/projects/jnicompressions/testdata/mapreduce-osdi-1.pdf
-12/01/14 14:11:25 INFO Compress:  125M/s Decompress:   369M/s(  540M/s) ratio: 68.4% - /Users/decster/projects/jnicompressions/testdata/plrabn12.txt
-12/01/14 14:11:25 INFO Compress:  522M/s Decompress:   291M/s( 1595M/s) ratio: 18.2% - /Users/decster/projects/jnicompressions/testdata/ptt5
-12/01/14 14:11:26 INFO Compress:  192M/s Decompress:   454M/s(  875M/s) ratio: 51.9% - /Users/decster/projects/jnicompressions/testdata/sum
-12/01/14 14:11:26 INFO Compress:  737M/s Decompress:   546M/s( 2496M/s) ratio: 21.9% - /Users/decster/projects/jnicompressions/testdata/terasort
-12/01/14 14:11:27 INFO Compress:  211M/s Decompress:   539M/s( 1060M/s) ratio: 50.9% - /Users/decster/projects/jnicompressions/testdata/urls.10K
-12/01/14 14:11:27 INFO Compress:  244M/s Decompress:   578M/s(  974M/s) ratio: 59.4% - /Users/decster/projects/jnicompressions/testdata/xargs.1
-12/01/14 14:11:27 INFO Compress:  233M/s Decompress:   426M/s(  944M/s) ratio: 45.2% - Total
+    [==========] Running 2 tests from 1 test case.
+    [----------] Global test environment set-up.
+    [----------] 2 tests from Perf
+    [ RUN      ] Perf.RawCompressionLz4  
+    12/01/14 14:11:12 INFO Block size: 64K
+    12/01/14 14:11:12 INFO Compress:  228M/s Decompress:   614M/s( 1028M/s) ratio: 59.7% - /Users/decster/projects/jnicompressions/testdata/alice29.txt
+    12/01/14 14:11:12 INFO Compress:  216M/s Decompress:   635M/s( 1019M/s) ratio: 62.3% - /Users/decster/projects/jnicompressions/testdata/asyoulik.txt
+    12/01/14 14:11:13 INFO Compress:  344M/s Decompress:   753M/s( 1556M/s) ratio: 48.4% - /Users/decster/projects/jnicompressions/testdata/cp.html
+    12/01/14 14:11:13 INFO Compress:  356M/s Decompress:   637M/s( 1362M/s) ratio: 46.8% - /Users/decster/projects/jnicompressions/testdata/fields.c
+    12/01/14 14:11:13 INFO Compress:  842M/s Decompress:   452M/s( 2543M/s) ratio: 17.8% - /Users/decster/projects/jnicompressions/testdata/geo.protodata
+    12/01/14 14:11:13 INFO Compress:  482M/s Decompress:   792M/s( 1541M/s) ratio: 51.4% - /Users/decster/projects/jnicompressions/testdata/grammar.lsp
+    12/01/14 14:11:13 INFO Compress: 4653M/s Decompress: 14962M/s(14925M/s) ratio: 100.2% - /Users/decster/projects/jnicompressions/testdata/house.jpg
+    12/01/14 14:11:13 INFO Compress:  634M/s Decompress:   456M/s( 2092M/s) ratio: 21.8% - /Users/decster/projects/jnicompressions/testdata/html
+    12/01/14 14:11:13 INFO Compress:  622M/s Decompress:   455M/s( 2062M/s) ratio: 22.1% - /Users/decster/projects/jnicompressions/testdata/html_x_4
+    12/01/14 14:11:14 INFO Compress:  531M/s Decompress:   610M/s( 1675M/s) ratio: 36.4% - /Users/decster/projects/jnicompressions/testdata/kennedy.xls
+    12/01/14 14:11:14 INFO Compress:  369M/s Decompress:   437M/s(  948M/s) ratio: 46.1% - /Users/decster/projects/jnicompressions/testdata/kppkn.gtb
+    12/01/14 14:11:15 INFO Compress:  236M/s Decompress:   605M/s( 1076M/s) ratio: 56.2% - /Users/decster/projects/jnicompressions/testdata/lcet10.txt
+    12/01/14 14:11:15 INFO Compress: 1154M/s Decompress:  3679M/s( 4458M/s) ratio: 82.5% - /Users/decster/projects/jnicompressions/testdata/mapreduce-osdi-1.pdf
+    12/01/14 14:11:16 INFO Compress:  203M/s Decompress:   650M/s(  972M/s) ratio: 66.8% - /Users/decster/projects/jnicompressions/testdata/plrabn12.txt
+    12/01/14 14:11:17 INFO Compress:  902M/s Decompress:   364M/s( 2156M/s) ratio: 16.9% - /Users/decster/projects/jnicompressions/testdata/ptt5
+    12/01/14 14:11:17 INFO Compress:  314M/s Decompress:   747M/s( 1518M/s) ratio: 49.2% - /Users/decster/projects/jnicompressions/testdata/sum
+    12/01/14 14:11:17 INFO Compress: 1070M/s Decompress:   694M/s( 3737M/s) ratio: 18.6% - /Users/decster/projects/jnicompressions/testdata/terasort
+    12/01/14 14:11:18 INFO Compress:  340M/s Decompress:   758M/s( 1612M/s) ratio: 47.0% - /Users/decster/projects/jnicompressions/testdata/urls.10K
+    12/01/14 14:11:18 INFO Compress:  393M/s Decompress:   861M/s( 1369M/s) ratio: 62.9% - /Users/decster/projects/jnicompressions/testdata/xargs.1
+    12/01/14 14:11:18 INFO Compress:  392M/s Decompress:   657M/s( 1529M/s) ratio: 43.0% - Total
+    [       OK ] Perf.RawCompressionLz4 (5794 ms)
+    [ RUN      ] Perf.RawCompressionSnappy
+    12/01/14 14:11:18 INFO Block size: 64K
+    12/01/14 14:11:18 INFO Compress:  134M/s Decompress:   368M/s(  616M/s) ratio: 59.8% - /Users/decster/projects/jnicompressions/testdata/alice29.txt
+    12/01/14 14:11:19 INFO Compress:  130M/s Decompress:   371M/s(  578M/s) ratio: 64.1% - /Users/decster/projects/jnicompressions/testdata/asyoulik.txt
+    12/01/14 14:11:19 INFO Compress:  193M/s Decompress:   469M/s(  974M/s) ratio: 48.1% - /Users/decster/projects/jnicompressions/testdata/cp.html
+    12/01/14 14:11:19 INFO Compress:  212M/s Decompress:   408M/s(  961M/s) ratio: 42.4% - /Users/decster/projects/jnicompressions/testdata/fields.c
+    12/01/14 14:11:19 INFO Compress:  434M/s Decompress:   445M/s( 1923M/s) ratio: 23.2% - /Users/decster/projects/jnicompressions/testdata/geo.protodata
+    12/01/14 14:11:19 INFO Compress:  277M/s Decompress:   523M/s( 1082M/s) ratio: 48.4% - /Users/decster/projects/jnicompressions/testdata/grammar.lsp
+    12/01/14 14:11:19 INFO Compress: 3107M/s Decompress: 17719M/s(17740M/s) ratio: 99.9% - /Users/decster/projects/jnicompressions/testdata/house.jpg
+    12/01/14 14:11:19 INFO Compress:  362M/s Decompress:   375M/s( 1589M/s) ratio: 23.6% - /Users/decster/projects/jnicompressions/testdata/html
+    12/01/14 14:11:20 INFO Compress:  361M/s Decompress:   366M/s( 1554M/s) ratio: 23.6% - /Users/decster/projects/jnicompressions/testdata/html_x_4
+    12/01/14 14:11:21 INFO Compress:  309M/s Decompress:   371M/s(  896M/s) ratio: 41.3% - /Users/decster/projects/jnicompressions/testdata/kennedy.xls
+    12/01/14 14:11:22 INFO Compress:  192M/s Decompress:   277M/s(  724M/s) ratio: 38.3% - /Users/decster/projects/jnicompressions/testdata/kppkn.gtb
+    12/01/14 14:11:23 INFO Compress:  141M/s Decompress:   374M/s(  656M/s) ratio: 57.1% - /Users/decster/projects/jnicompressions/testdata/lcet10.txt
+    12/01/14 14:11:23 INFO Compress:  737M/s Decompress:  3315M/s( 4035M/s) ratio: 82.1% - /Users/decster/projects/jnicompressions/testdata/mapreduce-osdi-1.pdf
+    12/01/14 14:11:25 INFO Compress:  125M/s Decompress:   369M/s(  540M/s) ratio: 68.4% - /Users/decster/projects/jnicompressions/testdata/plrabn12.txt
+    12/01/14 14:11:25 INFO Compress:  522M/s Decompress:   291M/s( 1595M/s) ratio: 18.2% - /Users/decster/projects/jnicompressions/testdata/ptt5
+    12/01/14 14:11:26 INFO Compress:  192M/s Decompress:   454M/s(  875M/s) ratio: 51.9% - /Users/decster/projects/jnicompressions/testdata/sum
+    12/01/14 14:11:26 INFO Compress:  737M/s Decompress:   546M/s( 2496M/s) ratio: 21.9% - /Users/decster/projects/jnicompressions/testdata/terasort
+    12/01/14 14:11:27 INFO Compress:  211M/s Decompress:   539M/s( 1060M/s) ratio: 50.9% - /Users/decster/projects/jnicompressions/testdata/urls.10K
+    12/01/14 14:11:27 INFO Compress:  244M/s Decompress:   578M/s(  974M/s) ratio: 59.4% - /Users/decster/projects/jnicompressions/testdata/xargs.1
+    12/01/14 14:11:27 INFO Compress:  233M/s Decompress:   426M/s(  944M/s) ratio: 45.2% - Total
 
