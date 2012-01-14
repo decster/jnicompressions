@@ -1,27 +1,29 @@
 Introduction
 ------------
 
-JNICompressions includes JNI wrappers for some fastest native 
-lightweight compression libraries. Currently there is only:
+JNICompressions includes JNI wrappers for some of the fastest native 
+lightweight compression libraries, which includes:
 
 lz4:  
 http://lz4.googlecode.com/svn/trunk  
 revision 46
 
 Lz4 is bundled with this library, so you do not need to compile lz4
-before compile this.
+before compiling this library.
 
-The compression/decompression speed using JNI is almost identical to native 
-interface. In general, byte array interface is a little slower(very little for 
-compression, 1x% for decompression) than ByteBuffer 
-interface, because byte array interface needs to copy to/from native buffer 
-when crossing JNI boundary, luckily if input/output buffer size is 
-reasonable(usually 32KB~256KB), bulk memory copy is very fast in CPU cache, 
-so byte array interface is acceptable in most scenarios.
+The speed of compression/decompression using JNI is almost identical to native 
+interface. In general, byte array interface is a little bit slower(very little 
+for compression, 1x% for decompression) than ByteBuffer interface, because byte 
+array interface needs to copy to/from native buffer when crossing JNI boundary. 
+If input/output buffer size is reasonable, usually 32KB~256KB, and given that 
+bulk memory copy is very fast in CPU cache, byte array interface will be 
+acceptable in most scenarios.
+
+Notice: Current build script only support LINUX & MACOSX x86_64.
 
 Test Result
 -----------
-You can run performance test in your own environment using:  
+Run performance test in your own environment:  
 $mvn test 
 
 Here are some test results on my macbook pro:
