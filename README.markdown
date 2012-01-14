@@ -2,34 +2,31 @@ Introduction
 ------------
 
 JNICompressions includes JNI wrappers for some fastest native 
-lightweight compression libraries. Currently we have:
+lightweight compression libraries. Currently there is only:
 
-lz4: 
-http://lz4.googlecode.com/svn/trunk
+lz4:  
+http://lz4.googlecode.com/svn/trunk  
 revision 46
 
-Lz4 is bundled with this library, so you do not need to install lz4
+Lz4 is bundled with this library, so you do not need to compile lz4
 before compile this.
 
 The compression/decompression speed using JNI is almost identical to native 
-interface. Generally, byte array interface is a little slower than ByteArray 
-interface, because byte array needs to copy to/from native buffer when cross 
-JNI boundary, luckily if your buffer size is reasonable(usually 32KB~256KB), 
-bulk memory copy is very fast in CPU cache(about 16~24G/s), 
+interface. In general, byte array interface is a little slower(very little for 
+compression, 1x% for decompression) than ByteBuffer 
+interface, because byte array interface needs to copy to/from native buffer 
+when crossing JNI boundary, luckily if input/output buffer size is 
+reasonable(usually 32KB~256KB), bulk memory copy is very fast in CPU cache, 
 so byte array interface is acceptable in most scenarios.
-
-You can run performance test in your own environment using:
-
-$mvn test 
-
 
 Test Result
 -----------
+You can run performance test in your own environment using:  
+$mvn test 
 
-Here are some test results using some test data included in google snappy:
+Here are some test results on my macbook pro:
 
     Test environment:
-    MacbookPro
     Processor Name: Intel Core i5
     Processor Speed:  2.3 GHz
     Number of Processors: 1
@@ -136,4 +133,6 @@ You can find the test code in another project of mine:
     12/01/14 14:11:27 INFO Compress:  211M/s Decompress:   539M/s( 1060M/s) ratio: 50.9% - /Users/decster/projects/jnicompressions/testdata/urls.10K
     12/01/14 14:11:27 INFO Compress:  244M/s Decompress:   578M/s(  974M/s) ratio: 59.4% - /Users/decster/projects/jnicompressions/testdata/xargs.1
     12/01/14 14:11:27 INFO Compress:  233M/s Decompress:   426M/s(  944M/s) ratio: 45.2% - Total
+    [       OK ] Perf.RawCompressionSnappy (9540 ms)
+    [----------] 2 tests from Perf (15334 ms total)
 
