@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include <string.h>
 #include <stdlib.h>
 #include <jni.h>
@@ -19,11 +37,10 @@ static int MaxLz4CompressedSize(int uncompressedSize) {
 }
 
 /*
- * Class:     compressions_Lz4Compression
  * Method:    Compress
  * Signature: ([BII[BI)I
  */
-extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_Compress(
+extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Lz4Compression_Compress(
     JNIEnv * jenv,
     jobject obj,
     jbyteArray src,
@@ -45,11 +62,10 @@ extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_Compress(
 }
 
 /*
- * Class:     compressions_Lz4Compression
  * Method:    Decompress
  * Signature: ([BII[BI)I
  */
-extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_Decompress(
+extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Lz4Compression_Decompress(
     JNIEnv * jenv,
     jobject obj,
     jbyteArray src,
@@ -75,11 +91,10 @@ extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_Decompress(
 }
 
 /*
- * Class:     compressions_Lz4Compression
  * Method:    CompressDirect
  * Signature: (Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;I)I
  */
-extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_CompressDirect(
+extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Lz4Compression_CompressDirect(
     JNIEnv * jenv,
     jobject obj,
     jobject src,
@@ -96,11 +111,10 @@ extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_CompressDirec
 }
 
 /*
- * Class:     compressions_Lz4Compression
  * Method:    DecompressDirect
  * Signature: (Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;I)I
  */
-extern "C" JNIEXPORT jint JNICALL Java_compressions_Lz4Compression_DecompressDirect(
+extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Lz4Compression_DecompressDirect(
     JNIEnv * jenv,
     jobject obj,
     jobject src,

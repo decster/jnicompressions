@@ -1,10 +1,31 @@
-package compressions;
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.github.decster.jnicompressions;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Random;
+
+import com.github.decster.jnicompressions.BlockCompression;
+import com.github.decster.jnicompressions.Lz4Compression;
 
 import junit.framework.TestCase;
 
@@ -48,10 +69,13 @@ public class BlockCompressionTest extends TestCase {
     byte [] input = sb.toString().getBytes();
     CompressDecompress(new Lz4Compression(), input);
     CompressDecompressDirect(new Lz4Compression(), input);
+    CompressDecompress(new SnappyCompression(), input);
+    CompressDecompressDirect(new SnappyCompression(), input);
   }
 
   public void testPerformance() throws IOException {
-    measurePerformance(new Lz4Compression(), 600);
+    measurePerformance(new Lz4Compression(), 400);
+    measurePerformance(new SnappyCompression(), 400);
   }
 
   public void measurePerformance(BlockCompression bc, int time) throws IOException {

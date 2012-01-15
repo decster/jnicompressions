@@ -14,8 +14,8 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>jnicompression</groupId>
-  <artifactId>jnicompression</artifactId>
+  <groupId>com.github.decster</groupId>
+  <artifactId>jnicompressions</artifactId>
   <version>0.1.0</version>
   <description>JNI wrappers of fast compression libraries</description>
   <name>JNI Compression</name>
@@ -70,7 +70,7 @@
                 </goals>
 								<configuration>
 									<javahClassNames>
-										<javahClassName>compressions.Lz4Compression</javahClassName>
+										<javahClassName>com.github.decster.jnicompressions.Lz4Compression</javahClassName>
 									</javahClassNames>
 									<javahOutputDirectory>${project.build.directory}/native/javah</javahOutputDirectory>
 								</configuration>
@@ -101,5 +101,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
