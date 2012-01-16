@@ -74,8 +74,8 @@ public class BlockCompressionTest extends TestCase {
   }
 
   public void testPerformance() throws IOException {
-    measurePerformance(new Lz4Compression(), 400);
-    measurePerformance(new SnappyCompression(), 400);
+    measurePerformance(new Lz4Compression(), 1000);
+    measurePerformance(new SnappyCompression(), 1000);
   }
 
   public void measurePerformance(BlockCompression bc, int time) throws IOException {

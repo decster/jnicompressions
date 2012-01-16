@@ -6,7 +6,7 @@ lightweight compression libraries, which includes:
 
 LZ4:  
 http://lz4.googlecode.com/svn/trunk  
-revision 46
+revision 51(Bugfix version)
 
 Google Snappy
 http://code.google.com/p/snappy/
