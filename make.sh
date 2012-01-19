@@ -4,8 +4,6 @@ DIR=`dirname $0`
 
 echo "OSNAME=$OSNAME"
 
-sh prepare-snappy.sh
-
 if [[ "$OSNAME" == Mac* ]]
 then
 echo "Building using config macos x86_64"
