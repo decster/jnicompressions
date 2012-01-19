@@ -43,6 +43,16 @@ public class BlockCompressionTest extends TestCase {
     }
   }
 
+  static void CompressDecompressSimple(BlockCompression bc, byte [] input) {
+    byte [] compressed = bc.CompressSimple(input);
+    assertTrue(compressed.length>0);
+    byte [] orig = bc.DecompressSimple(compressed);
+    assertEquals(input.length, orig.length);
+    for (int i=0;i<input.length;i++) {
+      assertEquals(input[i], orig[i]);
+    }
+  }
+
   static void CompressDecompressDirect(BlockCompression bc, byte [] input) {
     ByteBuffer inputb = ByteBuffer.allocateDirect(input.length);
     inputb.put(input);
@@ -67,44 +77,48 @@ public class BlockCompressionTest extends TestCase {
       sb.append('\n');
     }
     byte [] input = sb.toString().getBytes();
-    CompressDecompress(new Lz4Compression(), input);
-    CompressDecompressDirect(new Lz4Compression(), input);
-    CompressDecompress(new SnappyCompression(), input);
-    CompressDecompressDirect(new SnappyCompression(), input);
+    BlockCompression bc;
+    bc = new Lz4Compression();
+    CompressDecompress(bc, input);
+    CompressDecompressSimple(bc, input);
+    CompressDecompressDirect(bc, input);
+    bc = new SnappyCompression();
+    CompressDecompress(bc, input);
+    CompressDecompressSimple(bc, input);
+    CompressDecompressDirect(bc, input);
   }
 
   public void testPerformance() throws IOException {
-    measurePerformance(new Lz4Compression(), 1000);
-    measurePerformance(new SnappyCompression(), 1000);
+    measurePerformance(new Lz4Compression(), 64*1024*1024);
+    measurePerformance(new SnappyCompression(), 64*1024*1024);
   }
 
-  public void measurePerformance(BlockCompression bc, int time) throws IOException {
+  public void measurePerformance(BlockCompression bc, int sizePerFile) throws IOException {
     int blockSize = 64 * 1024;
     File [] allfiles = new File("testdata").listFiles();
-    System.out.printf("%s: DirectByteBuffer interface, block size: %dK, time: %d\n", bc
-        .getClass().getName(), blockSize / 1024, time);
-    MeasureResult total = new MeasureResult();
+    System.out.printf("%s: block size: %dK, dataSize/file: %d\n", bc
+        .getClass().getName(), blockSize / 1024, sizePerFile);
+    MeasureResult totalDirect = new MeasureResult();
+    MeasureResult totalByteArray = new MeasureResult();
+    MeasureResult totalSimple = new MeasureResult();
     for (File f : allfiles) {
       if (f.isFile()) {
         byte [] data = LoadFile(f);
+        int time = sizePerFile / data.length;
         MeasureResult result = measureDirect(bc, data, blockSize, time);
-        System.out.printf("%22s: \t%s\n", f.getName(), result.toString());
-        total.add(result);
+        System.out.printf("Direct    %20s: %s\n", f.getName(), result.toString());
+        totalDirect.add(result);
+        result = measure(bc, data, blockSize, time);
+        System.out.printf("ByteArray %20s: %s\n", f.getName(), result.toString());
+        totalByteArray.add(result);
+        result = measureSimple(bc, data, blockSize, time);
+        System.out.printf("Simple    %20s: %s\n", f.getName(), result.toString());
+        totalSimple.add(result);
       }
     }
-    System.out.printf("%22s: \t%s\n\n", "Total", total.toString());
-    System.out.printf("%s: byte array interface, block size: %dK, time: %d\n", bc
-        .getClass().getName(), blockSize / 1024, time);
-    total = new MeasureResult();
-    for (File f : allfiles) {
-      if (f.isFile()) {
-        byte [] data = LoadFile(f);
-        MeasureResult result = measure(bc, data, blockSize, time);
-        System.out.printf("%22s: \t%s\n", f.getName(), result.toString());
-        total.add(result);
-      }
-    }
-    System.out.printf("%22s: \t%s\n\n", "Total", total.toString());
+    System.out.printf("Direct    %20s: %s\n", "Total", totalDirect.toString());
+    System.out.printf("ByteArray %20s: %s\n", "Total", totalByteArray.toString());
+    System.out.printf("Simple    %20s: %s\n\n", "Total", totalSimple.toString());
   }
   
   static byte [] LoadFile(File path) throws IOException {
@@ -160,6 +174,33 @@ public class BlockCompressionTest extends TestCase {
       startTime = System.nanoTime();
       for (int i=0; i< time; i++) {
         int osize = bc.Decompress(dest, 0, compressedSize, decomp, 0);
+      }
+      endTime = System.nanoTime();
+      result.uncompressTime += endTime - startTime;
+    }
+    return result;
+  }
+
+  public MeasureResult measureSimple(BlockCompression bc, byte [] data, int blocksize, int time) {
+    MeasureResult result = new MeasureResult();
+    for (int start = 0; start < data.length; start += blocksize) {
+      int length = Math.min(data.length - start, blocksize);
+      byte [] orig = new byte[length];
+      System.arraycopy(data, start, orig, 0, length);
+      byte [] dest = null;
+      byte [] decomp = null;
+      long startTime = System.nanoTime();
+      for (int i=0; i< time; i++) {
+        dest = bc.CompressSimple(orig);
+        result.uncompressedSize += orig.length;
+        result.compressedSize += dest.length;
+      }
+      long endTime = System.nanoTime();
+      result.compressTime += endTime - startTime;
+
+      startTime = System.nanoTime();
+      for (int i=0; i< time; i++) {
+        decomp = bc.DecompressSimple(dest);
       }
       endTime = System.nanoTime();
       result.uncompressTime += endTime - startTime;

@@ -43,7 +43,7 @@ public interface BlockCompression {
    */
   public int Compress(byte[] src, int srcOffset, int srcLength, byte[] dest,
       int destOffset);
-
+  
   /**
    * Decompress one block
    * @param src input buffer
@@ -56,6 +56,21 @@ public interface BlockCompression {
   public int Decompress(byte[] src, int srcOffset, int srcLength, byte[] dest,
       int destOffset);
 
+
+  /**
+   * Simple byte array compress interface
+   * @param src uncompressed input data
+   * @return compressed data as byte array
+   */
+  public byte [] CompressSimple(byte [] src);
+  
+  /**
+   * Simple byte array decompress interface
+   * @param src compressed input data
+   * @return uncompressed data as byte array
+   */
+  public byte [] DecompressSimple(byte [] src);
+  
   // DirectByteBuffer interface, no buffer copy overhead
 
   /**

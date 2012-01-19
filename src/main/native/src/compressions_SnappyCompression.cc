@@ -95,6 +95,54 @@ extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Snappy
   }
 }
 
+
+extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_SnappyCompression_CompressSimple(
+    JNIEnv * jenv,
+    jobject obj,
+    jbyteArray src) {
+  jsize srcBufferSize = jenv->GetArrayLength(src);
+  jsize srcLength = jenv->GetArrayLength(src);
+  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
+  jbyte * outputBuffer = (jbyte*)malloc(snappy::MaxCompressedLength(srcLength));
+  jenv->GetByteArrayRegion(src, 0, srcLength, inputBuffer);
+  size_t compressedSize = 0;
+  snappy::RawCompress((char*) inputBuffer, srcLength, (char*) outputBuffer,
+                      &compressedSize);
+  jbyteArray dest = NULL;
+  if (compressedSize >= 0) {
+    dest = jenv->NewByteArray(compressedSize);
+    jenv->SetByteArrayRegion(dest, 0, compressedSize, outputBuffer);
+  }
+  free(inputBuffer);
+  free(outputBuffer);
+  return dest;
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_SnappyCompression_DecompressSimple(
+    JNIEnv * jenv,
+    jobject obj,
+    jbyteArray src) {
+  jsize srcLength = jenv->GetArrayLength(src);
+  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
+  jenv->GetByteArrayRegion(src, 0, srcLength, inputBuffer);
+  size_t uncompressedSize;
+  if (!snappy::GetUncompressedLength((const char*)inputBuffer, srcLength,
+                                     &uncompressedSize)) {
+    free(inputBuffer);
+    return NULL;
+  }
+  jbyte * outputBuffer = (jbyte*)malloc(uncompressedSize);
+  jbyteArray dest = NULL;
+  if (snappy::RawUncompress((const char*)inputBuffer, srcLength,
+                            (char *)outputBuffer)) {
+    dest = jenv->NewByteArray(uncompressedSize);
+    jenv->SetByteArrayRegion(dest, 0, uncompressedSize, outputBuffer);
+  }
+  free(inputBuffer);
+  free(outputBuffer);
+  return dest;
+}
+
 /*
  * Method:    CompressDirect
  * Signature: (Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;I)I

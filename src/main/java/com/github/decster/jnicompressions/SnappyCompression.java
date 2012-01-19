@@ -39,6 +39,12 @@ public class SnappyCompression implements BlockCompression {
       int destOffset);
 
   @Override
+  public native byte [] CompressSimple(byte [] src);
+  
+  @Override
+  public native byte [] DecompressSimple(byte [] src);
+
+  @Override
   public native int CompressDirect(ByteBuffer src, int srcOffset, int srcLength,
       ByteBuffer dest, int destOffset);
 
