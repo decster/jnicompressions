@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DIR=`dirname $0`
 
@@ -27,8 +27,8 @@ g++ $DIR/src/main/native/src/compressions_Lz4Compression.cc $DIR/src/main/native
     $DIR/src/main/native/snappy/snappy-sinksource.cc \
     $DIR/src/main/native/snappy/snappy-stubs-internal.cc \
     -DHAVE_CONFIG_H \
-    -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux \
-    -L$(JAVA_HOME)/jre/lib/amd64/server -L$(JAVA_HOME)/lib/amd64/server -ljvm \
+    -I$JAVA_HOME/include -I$JAVA_HOME/include/linux \
+    -L$JAVA_HOME/jre/lib/amd64/server -L$JAVA_HOME/lib/amd64/server -ljvm \
     -fPIC -O2 -DNDEBUG -shared \
     -o $DIR/target/libcompressions.so
 fi
