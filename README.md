@@ -16,20 +16,23 @@ LZ4 and Snappy is bundled with this library, so you do not need to install LZ4
 and snappy before building this library.
 
 There are 3 interfaces provided:  
-  * DirectBuffer interface;
-    The speed of DirectBuffer interface is almost identical to native C++ interface performance;
-  * Reusable ByteArray interface;
-    In general, byte array interface is a little bit slower(very little 
-    for compression, 1x% for decompression) than ByteBuffer interface, because byte 
-    array interface needs to copy to/from native buffer when crossing JNI boundary. 
-    If input/output buffer size is reasonable, usually 32KB~256KB, given that 
-    bulk memory copy is very fast in CPU cache(nearly 20GB/s), byte array interface 
-    will be acceptable in most scenarios.
-  * Simple ByteArray interface;
-    To improve usability, a very simple byte array interface is added too, but it is 
-    much slower, because every compression/decompression need to create new byte arrays(
-    involving malloc/free, array initialization, cache invalidate, data copy), 
-    this limits total throughput especially in high compression/decompression speed case.
+
+    * DirectBuffer interface;
+      The speed of DirectBuffer interface is almost identical to native C++ interface performance;
+
+    * Reusable ByteArray interface;
+      In general, byte array interface is a little bit slower(very little 
+      for compression, 1x% for decompression) than ByteBuffer interface, because byte 
+      array interface needs to copy to/from native buffer when crossing JNI boundary. 
+      If input/output buffer size is reasonable, usually 32KB~256KB, given that 
+      bulk memory copy is very fast in CPU cache(nearly 20GB/s), byte array interface 
+      will be acceptable in most scenarios.
+
+    * Simple ByteArray interface;
+      To improve usability, a very simple byte array interface is added too, but it is 
+      much slower, because every compression/decompression need to create new byte arrays(
+      involving malloc/free, array initialization, cache invalidate, data copy), 
+      this limits total throughput especially in high compression/decompression speed case.
 
 Notice: Current build script only support LINUX & MACOSX x86_64.
 
