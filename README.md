@@ -28,7 +28,7 @@ Notice: Current build script only support LINUX & MACOSX x86_64.
 Build
 -----
 There are pre-build Mac OS X 64bit binaries available in /lib, currently I do not
-have other build envirments, but I will try to add more flatforms and intergate jni 
+have other build envirments, but I will try to add more flatforms and integrate jni 
 libraries into a single jar file in the future.
 
 Make jar & native library using:
