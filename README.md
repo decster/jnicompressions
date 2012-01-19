@@ -27,8 +27,11 @@ Notice: Current build script only support LINUX & MACOSX x86_64.
 
 Build
 -----
-Make jar & native library using:
+There are pre-build Mac OS X 64bit binaries available in /lib, currently I do not
+have other build envirments, but I will try to add more flatforms and intergate jni 
+libraries into a single jar file in the future.
 
+Make jar & native library using:
 $mvn package
 
 Then add target/jnicompressions-0.1.0.jar to your classpath, and add 
