@@ -35,9 +35,9 @@ Notice: Current build script only support LINUX & MACOSX x86_64.
 
 Build
 -----
-There are pre-build Mac OS X 64bit binaries available in /lib, currently I do not
-have other build envirments, but I will try to add more flatforms and integrate jni 
-libraries into a single jar file in the future.
+There are pre-build Mac OS X 64bit binaries available in /prebuild, currently I do not
+have other build environments, sorry for the inconvenience, I will try to add more 
+platform and integrate JNI libraries into a single jar file like snappy-java in the future.
 
 Make jar & native library using:
 $mvn package
@@ -67,11 +67,11 @@ Here are some test results on my MacbookPro:
     gcc version 4.2.1 (Apple Inc. build 5659)
 
     Running com.github.decster.jnicompressions.BlockCompressionTest
-    com.github.decster.jnicompressions.Lz4Compression: DirectByteBuffer interface, block size: 64K, dataSize/file: 67108864
+    com.github.decster.jnicompressions.Lz4Compression: block size: 64K, dataSize/file: 67108864
     Direct                   Total: Compress:  433M/s Decompress:   651M/s( 1354M/s) ratio: 48.1%
     ByteArray                Total: Compress:  417M/s Decompress:   583M/s( 1212M/s) ratio: 48.1%
     Simple                   Total: Compress:  401M/s Decompress:   468M/s(  972M/s) ratio: 48.1%
-    com.github.decster.jnicompressions.SnappyCompression: DirectByteBuffer interface, block size: 64K, dataSize/file: 67108864
+    com.github.decster.jnicompressions.SnappyCompression: block size: 64K, dataSize/file: 67108864
     Direct                   Total: Compress:  402M/s Decompress:   495M/s( 1019M/s) ratio: 48.6%
     ByteArray                Total: Compress:  390M/s Decompress:   450M/s(  927M/s) ratio: 48.6%
     Simple                   Total: Compress:  373M/s Decompress:   383M/s(  788M/s) ratio: 48.6%
