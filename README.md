@@ -45,8 +45,7 @@ platform and integrate JNI libraries into a single jar file like snappy-java in 
 Make jar & native library using:
 $mvn package
 
-Then add target/jnicompressions-0.1.0.jar to your classpath, and add 
-target/libcompressions.* parent path to your java.library.path
+Then add target/jnicompressions-0.1.0.jar to your classpath
 
 Test
 ----
