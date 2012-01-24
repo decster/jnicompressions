@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 
 public class Lz4Compression implements BlockCompression {
   public Lz4Compression() {
-    NativeCompression.CheckNativeLibrary();
+    NativeLoader.CheckNativeLibrary();
   } 
 
   @Override

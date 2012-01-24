@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 
 public class SnappyCompression implements BlockCompression {
   public SnappyCompression() {
-    NativeCompression.CheckNativeLibrary();
+    NativeLoader.CheckNativeLibrary();
   } 
 
   @Override

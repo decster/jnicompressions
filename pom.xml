@@ -16,7 +16,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.decster</groupId>
   <artifactId>jnicompressions</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.0-SNAPSHOT</version>
   <description>JNI wrappers of fast compression libraries</description>
   <name>JNI Compression</name>
   <packaging>jar</packaging>
@@ -43,10 +43,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-           <forkMode>always</forkMode>
-           <argLine>-Djava.library.path=${project.build.directory}/</argLine>
-        </configuration>
+<!--         <configuration> -->
+<!--            <forkMode>always</forkMode> -->
+<!--            <argLine>-Djava.library.path=${project.build.directory}/</argLine> -->
+<!--         </configuration> -->
       </plugin>
     </plugins>
   </build>
