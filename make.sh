@@ -28,7 +28,7 @@ g++ $DIR/src/main/native/src/compressions_Lz4Compression.cc $DIR/src/main/native
     -DHAVE_CONFIG_H \
     -I$JAVA_HOME/include -I$JAVA_HOME/include/linux \
     -L$JAVA_HOME/jre/lib/amd64/server -L$JAVA_HOME/lib/amd64/server -ljvm \
-    -fPIC -O2 -DNDEBUG -shared -static-libgcc -static-libstdc++ \
+    -fPIC -O2 -DNDEBUG -shared -static-libgcc \
     -o $DIR/target/libcompressions.so
 cp target/libcompressions.so src/main/resources/com/github/decster/jnicompressions/native/linux/x86_64/
 fi
