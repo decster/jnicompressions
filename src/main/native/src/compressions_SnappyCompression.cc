@@ -34,22 +34,16 @@ extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Snappy
     jint srcLength,
     jbyteArray dest,
     jint destOffset) {
-  jsize srcBufferSize = jenv->GetArrayLength(src);
-  if (srcOffset + srcLength > srcBufferSize) {
+  char* in = (char*) jenv->GetPrimitiveArrayCritical(src, 0);
+  char* out = (char*) jenv->GetPrimitiveArrayCritical(dest, 0);
+  if(in == 0 || out == 0) {
     return -1;
   }
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
-  jbyte * outputBuffer = (jbyte*)malloc(snappy::MaxCompressedLength(srcLength));
-  jenv->GetByteArrayRegion(src, srcOffset, srcLength, inputBuffer);
-  size_t compressedSize = 0;
-  snappy::RawCompress((char*) inputBuffer, srcLength, (char*) outputBuffer,
-                      &compressedSize);
-  if (compressedSize >= 0) {
-    jenv->SetByteArrayRegion(dest, destOffset, compressedSize, outputBuffer);
-  }
-  free(inputBuffer);
-  free(outputBuffer);
-  return compressedSize;
+  size_t compressedLength;
+  snappy::RawCompress(in + srcOffset, (size_t) srcLength, out + destOffset, &compressedLength);
+  jenv->ReleasePrimitiveArrayCritical(src, in, 0);
+  jenv->ReleasePrimitiveArrayCritical(dest, out, 0);
+  return (jint) compressedLength;
 }
 
 /*
@@ -64,35 +58,21 @@ extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Snappy
     jint srcLength,
     jbyteArray dest,
     jint destOffset) {
-  jsize srcBufferSize = jenv->GetArrayLength(src);
-  if (srcOffset + srcLength > srcBufferSize) {
+  char* in = (char*) jenv->GetPrimitiveArrayCritical(src, 0);
+  char* out = (char*) jenv->GetPrimitiveArrayCritical(dest, 0);
+  if(in == 0 || out == 0) {
+    // out of memory
     return -1;
   }
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
-  jenv->GetByteArrayRegion(src, srcOffset, srcLength, inputBuffer);
-  size_t uncompressedSize;
-  if (!snappy::GetUncompressedLength((const char*)inputBuffer, srcLength,
-                                     &uncompressedSize)) {
-    free(inputBuffer);
+  size_t uncompressedLength;
+  snappy::GetUncompressedLength(in + srcOffset, (size_t) srcLength, &uncompressedLength);
+  bool ret = snappy::RawUncompress(in + srcOffset, (size_t) srcLength, out + destOffset);
+  jenv->ReleasePrimitiveArrayCritical(src, in, 0);
+  jenv->ReleasePrimitiveArrayCritical(dest, out, 0);
+  if(!ret) {
     return -1;
   }
-  jsize length = jenv->GetArrayLength(dest);
-  if (length < destOffset + uncompressedSize) {
-    free(inputBuffer);
-    return -2;
-  }
-  jbyte * outputBuffer = (jbyte*)malloc(uncompressedSize);
-  if (snappy::RawUncompress((const char*)inputBuffer, srcLength,
-                            (char *)outputBuffer)) {
-    jenv->SetByteArrayRegion(dest, destOffset, uncompressedSize, outputBuffer);
-    free(inputBuffer);
-    free(outputBuffer);
-    return uncompressedSize;
-  } else {
-    free(inputBuffer);
-    free(outputBuffer);
-    return -1;
-  }
+  return (jint) uncompressedLength;
 }
 
 
@@ -100,11 +80,9 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
     JNIEnv * jenv,
     jobject obj,
     jbyteArray src) {
-  jsize srcBufferSize = jenv->GetArrayLength(src);
   jsize srcLength = jenv->GetArrayLength(src);
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
+  jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
   jbyte * outputBuffer = (jbyte*)malloc(snappy::MaxCompressedLength(srcLength));
-  jenv->GetByteArrayRegion(src, 0, srcLength, inputBuffer);
   size_t compressedSize = 0;
   snappy::RawCompress((char*) inputBuffer, srcLength, (char*) outputBuffer,
                       &compressedSize);
@@ -113,7 +91,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
     dest = jenv->NewByteArray(compressedSize);
     jenv->SetByteArrayRegion(dest, 0, compressedSize, outputBuffer);
   }
-  free(inputBuffer);
+  jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
   free(outputBuffer);
   return dest;
 }
@@ -123,24 +101,23 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
     jobject obj,
     jbyteArray src) {
   jsize srcLength = jenv->GetArrayLength(src);
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
-  jenv->GetByteArrayRegion(src, 0, srcLength, inputBuffer);
+  jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
   size_t uncompressedSize;
   if (!snappy::GetUncompressedLength((const char*)inputBuffer, srcLength,
                                      &uncompressedSize)) {
     free(inputBuffer);
     return NULL;
   }
-  jbyte * outputBuffer = (jbyte*)malloc(uncompressedSize);
-  jbyteArray dest = NULL;
+  jbyteArray dest = jenv->NewByteArray(uncompressedSize);
+  jbyte * outputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(dest, 0);
   if (snappy::RawUncompress((const char*)inputBuffer, srcLength,
                             (char *)outputBuffer)) {
-    dest = jenv->NewByteArray(uncompressedSize);
-    jenv->SetByteArrayRegion(dest, 0, uncompressedSize, outputBuffer);
+    jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
+    jenv->ReleasePrimitiveArrayCritical(dest, outputBuffer, 0);
+    return dest;
+  } else {
+    return NULL;
   }
-  free(inputBuffer);
-  free(outputBuffer);
-  return dest;
 }
 
 /*

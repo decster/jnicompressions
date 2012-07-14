@@ -49,18 +49,19 @@ extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Lz4Com
     jint srcLength,
     jbyteArray dest,
     jint destOffset) {
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
-  jbyte * outputBuffer = (jbyte*)malloc(4+MaxLz4CompressedSize(srcLength));
-  jenv->GetByteArrayRegion(src, srcOffset, srcLength, inputBuffer);
-  jint osize = LZ4_compress((char*) inputBuffer, (char*) outputBuffer + 4,
+  jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
+  jbyte * outputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(dest, 0);
+  if (inputBuffer == 0 || outputBuffer == 0) {
+    return -1;
+  }
+  jint osize = LZ4_compress((char*) inputBuffer + srcOffset, (char*) outputBuffer + destOffset + 4,
                             srcLength);
   if (osize >= 0) {
     *(uint32_t*)outputBuffer = (uint32_t)srcLength;
-    jenv->SetByteArrayRegion(dest, destOffset, osize + 4, outputBuffer);
   }
-  free(inputBuffer);
-  free(outputBuffer);
-  return osize + 4;
+  jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
+  jenv->ReleasePrimitiveArrayCritical(dest, outputBuffer, 0);
+  return osize >= 0 ? (osize + 4): -1;
 }
 
 /*
@@ -78,20 +79,16 @@ extern "C" JNIEXPORT jint JNICALL Java_com_github_decster_jnicompressions_Lz4Com
   if (srcLength < 4) {
     return -1;
   }
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
+  jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
+  jbyte * outputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(dest, 0);
   jsize length = jenv->GetArrayLength(dest);
-  jbyte * outputBuffer = (jbyte*)malloc(length - destOffset);
-  jenv->GetByteArrayRegion(src, srcOffset, srcLength, inputBuffer);
   jint osize =
-      LZ4_uncompress_unknownOutputSize((char*)inputBuffer+4,
-                                       (char*)outputBuffer,
+      LZ4_uncompress_unknownOutputSize((char*)inputBuffer + srcOffset + 4,
+                                       (char*)outputBuffer + destOffset,
                                        srcLength-4,
                                        length - destOffset);
-  if (osize >= 0) {
-    jenv->SetByteArrayRegion(dest, destOffset, osize, outputBuffer);
-  }
-  free(inputBuffer);
-  free(outputBuffer);
+  jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
+  jenv->ReleasePrimitiveArrayCritical(dest, outputBuffer, 0);
   return osize;
 }
 
@@ -100,9 +97,8 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
     jobject obj,
     jbyteArray src) {
   jsize srcLength = jenv->GetArrayLength(src);
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
-  jbyte * outputBuffer = (jbyte*)malloc(4+MaxLz4CompressedSize(srcLength));
-  jenv->GetByteArrayRegion(src, 0, srcLength, inputBuffer);
+  jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
+  jbyte * outputBuffer = (jbyte*)malloc(MaxLz4CompressedSize(srcLength)+4);
   jint osize = LZ4_compress((char*) inputBuffer, (char*) outputBuffer + 4,
                             srcLength);
   jbyteArray dest = NULL;
@@ -111,7 +107,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
     dest = jenv->NewByteArray(osize+4);
     jenv->SetByteArrayRegion(dest, 0, osize+4, outputBuffer);
   }
-  free(inputBuffer);
+  jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
   free(outputBuffer);
   return dest;
 }
@@ -124,22 +120,17 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
   if (srcLength < 4) {
     return NULL;
   }
-  jbyte * inputBuffer = (jbyte*)malloc(srcLength);
-  jenv->GetByteArrayRegion(src, 0, srcLength, inputBuffer);
+  jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
   jsize length = *(uint32_t*)inputBuffer;
-  jbyte * outputBuffer = (jbyte*)malloc(length);
+  jbyteArray dest = jenv->NewByteArray(length);
+  jbyte * outputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(dest, 0);
   jint osize =
       LZ4_uncompress_unknownOutputSize((char*)inputBuffer+4,
                                        (char*)outputBuffer,
                                        srcLength-4,
                                        length);
-  jbyteArray dest = NULL;
-  if (osize >= 0) {
-    dest = jenv->NewByteArray(osize);
-    jenv->SetByteArrayRegion(dest, 0, osize, outputBuffer);
-  }
-  free(inputBuffer);
-  free(outputBuffer);
+  jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
+  jenv->ReleasePrimitiveArrayCritical(dest, outputBuffer, 0);
   return dest;
 }
 

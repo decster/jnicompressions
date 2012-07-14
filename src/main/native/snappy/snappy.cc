@@ -140,12 +140,12 @@ const int kMaxIncrementCopyOverflow = 10;
 
 static inline void IncrementalCopyFastPath(const char* src, char* op, int len) {
   while (op - src < 8) {
-    UNALIGNED_STORE64(op, UNALIGNED_LOAD64(src));
+    UnalignedCopy64(src, op);
     len -= op - src;
     op += op - src;
   }
   while (len > 0) {
-    UNALIGNED_STORE64(op, UNALIGNED_LOAD64(src));
+    UnalignedCopy64(src, op);
     src += 8;
     op += 8;
     len -= 8;
@@ -172,8 +172,8 @@ static inline char* EmitLiteral(char* op,
     //   - The output will always have 32 spare bytes (see
     //     MaxCompressedLength).
     if (allow_fast_path && len <= 16) {
-      UNALIGNED_STORE64(op, UNALIGNED_LOAD64(literal));
-      UNALIGNED_STORE64(op + 8, UNALIGNED_LOAD64(literal + 8));
+      UnalignedCopy64(literal, op);
+      UnalignedCopy64(literal + 8, op + 8);
       return op + len;
     }
   } else {
@@ -272,15 +272,48 @@ uint16* WorkingMemory::GetHashTable(size_t input_size, int* table_size) {
 }
 }  // end namespace internal
 
-// For 0 <= offset <= 4, GetUint32AtOffset(UNALIGNED_LOAD64(p), offset) will
+// For 0 <= offset <= 4, GetUint32AtOffset(GetEightBytesAt(p), offset) will
 // equal UNALIGNED_LOAD32(p + offset).  Motivation: On x86-64 hardware we have
 // empirically found that overlapping loads such as
 //  UNALIGNED_LOAD32(p) ... UNALIGNED_LOAD32(p+1) ... UNALIGNED_LOAD32(p+2)
 // are slower than UNALIGNED_LOAD64(p) followed by shifts and casts to uint32.
+//
+// We have different versions for 64- and 32-bit; ideally we would avoid the
+// two functions and just inline the UNALIGNED_LOAD64 call into
+// GetUint32AtOffset, but GCC (at least not as of 4.6) is seemingly not clever
+// enough to avoid loading the value multiple times then. For 64-bit, the load
+// is done when GetEightBytesAt() is called, whereas for 32-bit, the load is
+// done at GetUint32AtOffset() time.
+
+#ifdef ARCH_K8
+
+typedef uint64 EightBytesReference;
+
+static inline EightBytesReference GetEightBytesAt(const char* ptr) {
+  return UNALIGNED_LOAD64(ptr);
+}
+
 static inline uint32 GetUint32AtOffset(uint64 v, int offset) {
-  DCHECK(0 <= offset && offset <= 4) << offset;
+  DCHECK_GE(offset, 0);
+  DCHECK_LE(offset, 4);
   return v >> (LittleEndian::IsLittleEndian() ? 8 * offset : 32 - 8 * offset);
 }
+
+#else
+
+typedef const char* EightBytesReference;
+
+static inline EightBytesReference GetEightBytesAt(const char* ptr) {
+  return ptr;
+}
+
+static inline uint32 GetUint32AtOffset(const char* v, int offset) {
+  DCHECK_GE(offset, 0);
+  DCHECK_LE(offset, 4);
+  return UNALIGNED_LOAD32(v + offset);
+}
+
+#endif
 
 // Flat array compression that does not emit the "uncompressed length"
 // prefix. Compresses "input" string to the "*op" buffer.
@@ -378,7 +411,7 @@ char* CompressFragment(const char* input,
       // though we don't yet know how big the literal will be.  We handle that
       // by proceeding to the next iteration of the main loop.  We also can exit
       // this loop via goto if we get close to exhausting the input.
-      uint64 input_bytes = 0;
+      EightBytesReference input_bytes;
       uint32 candidate_bytes = 0;
 
       do {
@@ -397,7 +430,7 @@ char* CompressFragment(const char* input,
         if (PREDICT_FALSE(ip >= ip_limit)) {
           goto emit_remainder;
         }
-        input_bytes = UNALIGNED_LOAD64(insert_tail);
+        input_bytes = GetEightBytesAt(insert_tail);
         uint32 prev_hash = HashBytes(GetUint32AtOffset(input_bytes, 0), shift);
         table[prev_hash] = ip - base_ip - 1;
         uint32 cur_hash = HashBytes(GetUint32AtOffset(input_bytes, 1), shift);
@@ -955,8 +988,8 @@ class SnappyArrayWriter {
     const size_t space_left = op_limit_ - op;
     if (len <= 16 && available >= 16 && space_left >= 16) {
       // Fast path, used for the majority (about 95%) of invocations.
-      UNALIGNED_STORE64(op, UNALIGNED_LOAD64(ip));
-      UNALIGNED_STORE64(op + 8, UNALIGNED_LOAD64(ip + 8));
+      UnalignedCopy64(ip, op);
+      UnalignedCopy64(ip + 8, op + 8);
       op_ = op + len;
       return true;
     } else {
@@ -973,8 +1006,8 @@ class SnappyArrayWriter {
     }
     if (len <= 16 && offset >= 8 && space_left >= 16) {
       // Fast path, used for the majority (70-80%) of dynamic invocations.
-      UNALIGNED_STORE64(op, UNALIGNED_LOAD64(op - offset));
-      UNALIGNED_STORE64(op + 8, UNALIGNED_LOAD64(op - offset + 8));
+      UnalignedCopy64(op - offset, op);
+      UnalignedCopy64(op - offset + 8, op + 8);
     } else {
       if (space_left >= len + kMaxIncrementCopyOverflow) {
         IncrementalCopyFastPath(op - offset, op, len);
