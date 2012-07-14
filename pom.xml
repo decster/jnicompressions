@@ -16,7 +16,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.decster</groupId>
   <artifactId>jnicompressions</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2-SNAPSHOT</version>
   <description>JNI wrappers of fast compression libraries</description>
   <name>JNI Compression</name>
   <packaging>jar</packaging>
