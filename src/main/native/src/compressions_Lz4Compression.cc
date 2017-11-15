@@ -99,13 +99,15 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_github_decster_jnicompressions_
   jsize srcLength = jenv->GetArrayLength(src);
   jbyte * inputBuffer = (jbyte *)jenv->GetPrimitiveArrayCritical(src, 0);
   jbyte * outputBuffer = (jbyte*)malloc(MaxLz4CompressedSize(srcLength)+4);
-  jint osize = LZ4_compress((char*) inputBuffer, (char*) outputBuffer + 4,
-                            srcLength);
-  jbyteArray dest = NULL;
-  if (osize >= 0) {
-    *(uint32_t*)outputBuffer = (uint32_t)srcLength;
-    dest = jenv->NewByteArray(osize+4);
-    jenv->SetByteArrayRegion(dest, 0, osize+4, outputBuffer);
+  if (outputBuffer) {
+      jint osize = LZ4_compress((char*) inputBuffer, (char*) outputBuffer + 4,
+                                srcLength);
+      jbyteArray dest = NULL;
+      if (osize >= 0) {
+        *(uint32_t*)outputBuffer = (uint32_t)srcLength;
+        dest = jenv->NewByteArray(osize+4);
+        jenv->SetByteArrayRegion(dest, 0, osize+4, outputBuffer);
+      }
   }
   jenv->ReleasePrimitiveArrayCritical(src, inputBuffer, 0);
   free(outputBuffer);
